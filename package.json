@@ -1,0 +1,46 @@
+{
+  "name": "@nuraloom/navlink",
+  "version": "1.0.0",
+  "description": "A production-ready NavLink component for Next.js (App Router)",
+  "main": "dist/index.js",
+  "module": "dist/index.mjs",
+  "types": "dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": "./dist/index.mjs",
+      "require": "./dist/index.js"
+    }
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch"
+  },
+  "keywords": [
+    "nextjs",
+    "react",
+    "navlink",
+    "navigation",
+    "component",
+    "typescript"
+  ],
+  "author": "Your Name",
+  "license": "MIT",
+  "peerDependencies": {
+    "next": ">=13",
+    "react": ">=18"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.26",
+    "next": "^16.0.1",
+    "tsup": "^8.0.0",
+    "typescript": "^5.0.0"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/your-org/navlink.git"
+  },
+  "bugs": {
+    "url": "https://github.com/your-org/navlink/issues"
+  },
+  "homepage": "https://github.com/your-org/navlink#readme"
+}
