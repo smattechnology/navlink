@@ -37,10 +37,10 @@
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/your-org/navlink.git"
+    "url": "https://github.com/smattechnology/navlink.git"
   },
   "bugs": {
-    "url": "https://github.com/your-org/navlink/issues"
+    "url": "https://github.com/smattechnology/navlink/issues"
   },
-  "homepage": "https://github.com/your-org/navlink#readme"
+  "homepage": "https://github.com/smattechnology/navlink#readme"
 }
