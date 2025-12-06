@@ -6,13 +6,11 @@
     "declaration": true,
     "declarationDir": "dist",
     "outDir": "dist",
-    "strict": true,
     "esModuleInterop": true,
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Bundler",
-    "types": ["react", "next"],
-    "alwaysStrict": false
+    "types": ["react", "next"]
   },
   "include": ["src"],
   "treeshake": false,
