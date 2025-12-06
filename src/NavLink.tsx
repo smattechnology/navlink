@@ -1,7 +1,7 @@
 "use client";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React, { useCallback, useEffect, useState } from "react";
 
 // --------------------
 // Types
@@ -153,27 +153,35 @@ export function NavLink({
 NavLink.displayName = "NavLink";
 
 // --------------------
-// useNavigate Hook
+// useNavigate Hook (FIXED)
 // --------------------
 
 export const useNavigate = () => {
   const router = useRouter();
   const pathname = usePathname();
 
-  const navigate = (
-    href: string,
-    options?: { replace?: boolean; scroll?: boolean }
-  ) => {
-    if (pathname === href) return;
-    progressManager.start();
-    const { replace = false, scroll = true } = options || {};
-    if (replace) router.replace(href, { scroll });
-    else router.push(href, { scroll });
-  };
+  // Pre-check external link ONCE using hook-safe location
+  const checkIsExternal = useCallback((href: string) => {
+    return isExternalLink(href);
+  }, []);
+
+  const navigate = useCallback(
+    (href: string, options?: { replace?: boolean; scroll?: boolean }) => {
+      const isExternal = checkIsExternal(href);
+
+      // Do nothing for same-page or external links
+      if (pathname === href || isExternal) return;
+
+      // Start progress bar
+      progressManager.start();
+
+      const { replace = false, scroll = true } = options || {};
+
+      if (replace) router.replace(href, { scroll });
+      else router.push(href, { scroll });
+    },
+    [pathname, router, checkIsExternal]
+  );
 
   return navigate;
 };
-
-// --------------------
-// NavigationProgress Component
-// --------------------
