@@ -1,6 +1,6 @@
 {
-  "name": "@nuraloom/navlink",
-  "version": "1.1.9",
+  "name": "@dct/navlink",
+  "version": "1.0.0",
   "description": "A production-ready NavLink component for Next.js (App Router)",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
@@ -16,6 +16,12 @@
     "dev": "tsup --watch"
   },
   "keywords": [
+    "dct",
+    "delta",
+    "cube",
+    "delta cube",
+    "technology",
+    "delta cube technology",
     "nextjs",
     "react",
     "navlink",
