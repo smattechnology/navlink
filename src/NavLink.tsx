@@ -170,10 +170,10 @@ export const useNavigate = () => {
       const isExternal = checkIsExternal(href);
 
       // Do nothing for same-page or external links
-      if (pathname === href || isExternal) return;
+      if (pathname === href) return;
 
       // Start progress bar
-      progressManager.start();
+      if (!isExternal) progressManager.start();
 
       const { replace = false, scroll = true } = options || {};
 
