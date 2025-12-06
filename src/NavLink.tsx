@@ -1,6 +1,3 @@
-// src/lib/nav-progress/index.tsx
-"use client";
-
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import React, { useEffect, useState } from "react";
