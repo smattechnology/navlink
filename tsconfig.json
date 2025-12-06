@@ -11,9 +11,7 @@
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Bundler",
     "types": ["react", "next"],
-    "alwaysStrict": null
+    "alwaysStrict": false
   },
-  "include": ["src"],
-  "treeshake": false,
-  "output": { "preserveDirectives": true }
+  "include": ["src"]
 }
