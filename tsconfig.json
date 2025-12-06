@@ -10,7 +10,8 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "Bundler",
-    "types": ["react", "next"]
+    "types": ["react", "next"],
+    "alwaysStrict": null
   },
   "include": ["src"],
   "treeshake": false,
