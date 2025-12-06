@@ -48,5 +48,8 @@
   "bugs": {
     "url": "https://github.com/smattechnology/navlink/issues"
   },
-  "homepage": "https://github.com/smattechnology/navlink#readme"
+  "homepage": "https://github.com/smattechnology/navlink#readme",
+  "publishConfig": {
+    "access": "public"
+  }
 }
