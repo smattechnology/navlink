@@ -13,5 +13,7 @@
     "moduleResolution": "Bundler",
     "types": ["react", "next"]
   },
-  "include": ["src"]
+  "include": ["src"],
+  "treeshake": false,
+  "output": { "preserveDirectives": true }
 }

@@ -1,3 +1,4 @@
+"use client";
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
@@ -33,7 +34,7 @@ var __objRest = (source, exclude) => {
 // src/NavLink.tsx
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { jsx } from "react/jsx-runtime";
 var NavProgressManager = class {
   constructor() {
@@ -142,11 +143,16 @@ var useNavigate = () => {
   };
   return navigate;
 };
-var NavigationProgress = ({ color = "#2563EB", height = "3px", duration = 200 }) => {
-  const [width, setWidth] = useState("0%");
-  const [visible, setVisible] = useState(false);
-  const pathname = usePathname();
-  useEffect(() => {
+
+// src/NavigationProgressClient.tsx
+import { useEffect as useEffect2, useState as useState2 } from "react";
+import { usePathname as usePathname2 } from "next/navigation";
+import { jsx as jsx2 } from "react/jsx-runtime";
+var NavigationProgressClient = ({ color = "#2563EB", height = "3px", duration = 200 }) => {
+  const [width, setWidth] = useState2("0%");
+  const [visible, setVisible] = useState2(false);
+  const pathname = usePathname2();
+  useEffect2(() => {
     progressManager.onStart(() => {
       setVisible(true);
       setWidth("0%");
@@ -160,11 +166,11 @@ var NavigationProgress = ({ color = "#2563EB", height = "3px", duration = 200 })
       }, duration + 50);
     });
   }, [duration]);
-  useEffect(() => {
+  useEffect2(() => {
     progressManager.finish();
   }, [pathname]);
   if (!visible) return null;
-  return /* @__PURE__ */ jsx(
+  return /* @__PURE__ */ jsx2(
     "div",
     {
       style: {
@@ -179,7 +185,7 @@ var NavigationProgress = ({ color = "#2563EB", height = "3px", duration = 200 })
 };
 export {
   NavLink,
-  NavigationProgress,
+  NavigationProgressClient as NavigationProgress,
   useNavigate
 };
 //# sourceMappingURL=index.mjs.map

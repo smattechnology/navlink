@@ -16,10 +16,11 @@ declare const useNavigate: () => (href: string, options?: {
     replace?: boolean;
     scroll?: boolean;
 }) => void;
-declare const NavigationProgress: React.FC<{
+
+declare const NavigationProgressClient: React.FC<{
     color?: string;
     height?: string;
     duration?: number;
 }>;
 
-export { NavLink, type NavLinkProps, NavigationProgress, useNavigate };
+export { NavLink, type NavLinkProps, NavigationProgressClient as NavigationProgress, useNavigate };

@@ -1,4 +1,3 @@
-"use strict";
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -9,15 +8,21 @@ var __getOwnPropSymbols = Object.getOwnPropertySymbols;
 var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
-var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
+var __defNormalProp = (obj, key, value) =>
+  key in obj
+    ? __defProp(obj, key, {
+        enumerable: true,
+        configurable: true,
+        writable: true,
+        value,
+      })
+    : (obj[key] = value);
 var __spreadValues = (a, b) => {
   for (var prop in b || (b = {}))
-    if (__hasOwnProp.call(b, prop))
-      __defNormalProp(a, prop, b[prop]);
+    if (__hasOwnProp.call(b, prop)) __defNormalProp(a, prop, b[prop]);
   if (__getOwnPropSymbols)
     for (var prop of __getOwnPropSymbols(b)) {
-      if (__propIsEnum.call(b, prop))
-        __defNormalProp(a, prop, b[prop]);
+      if (__propIsEnum.call(b, prop)) __defNormalProp(a, prop, b[prop]);
     }
   return a;
 };
@@ -39,29 +44,38 @@ var __export = (target, all) => {
     __defProp(target, name, { get: all[name], enumerable: true });
 };
 var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
+  if ((from && typeof from === "object") || typeof from === "function") {
     for (let key of __getOwnPropNames(from))
       if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
+        __defProp(to, key, {
+          get: () => from[key],
+          enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable,
+        });
   }
   return to;
 };
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
-var __toCommonJS = (mod) => __copyProps(__defProp({}, "__esModule", { value: true }), mod);
+var __toESM = (mod, isNodeMode, target) => (
+  (target = mod != null ? __create(__getProtoOf(mod)) : {}),
+  __copyProps(
+    // If the importer is in node compatibility mode or this is not an ESM
+    // file that has been converted to a CommonJS file using a Babel-
+    // compatible transform (i.e. "__esModule" has not been set), then set
+    // "default" to the CommonJS "module.exports" for node compatibility.
+    isNodeMode || !mod || !mod.__esModule
+      ? __defProp(target, "default", { value: mod, enumerable: true })
+      : target,
+    mod
+  )
+);
+var __toCommonJS = (mod) =>
+  __copyProps(__defProp({}, "__esModule", { value: true }), mod);
 
 // src/index.ts
 var index_exports = {};
 __export(index_exports, {
   NavLink: () => NavLink,
-  NavigationProgress: () => NavigationProgress,
-  useNavigate: () => useNavigate
+  NavigationProgress: () => NavigationProgressClient,
+  useNavigate: () => useNavigate,
 });
 module.exports = __toCommonJS(index_exports);
 
@@ -90,8 +104,10 @@ var NavProgressManager = class {
 };
 var progressManager = new NavProgressManager();
 var EXTERNAL_LINK_REGEX = /^(https?:)?\/\//;
-var DEFAULT_CLASSES = "inline-flex items-center gap-2 px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none";
-var DEFAULT_ACTIVE_CLASSES = "text-sky-600 font-semibold bg-sky-50 dark:bg-sky-950/20";
+var DEFAULT_CLASSES =
+  "inline-flex items-center gap-2 px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none";
+var DEFAULT_ACTIVE_CLASSES =
+  "text-sky-600 font-semibold bg-sky-50 dark:bg-sky-950/20";
 var normalizePath = (path) => {
   if (!path || path === "/") return "/";
   return path.endsWith("/") ? path.slice(0, -1) : path;
@@ -105,29 +121,38 @@ var getPathnameFromExternalUrl = (url) => {
   }
 };
 function NavLink(_a) {
-  var _b = _a, {
-    href,
-    exact = false,
-    activeClassName = DEFAULT_ACTIVE_CLASSES,
-    className = DEFAULT_CLASSES,
-    children
-  } = _b, rest = __objRest(_b, [
-    "href",
-    "exact",
-    "activeClassName",
-    "className",
-    "children"
-  ]);
+  var _b = _a,
+    {
+      href,
+      exact = false,
+      activeClassName = DEFAULT_ACTIVE_CLASSES,
+      className = DEFAULT_CLASSES,
+      children,
+    } = _b,
+    rest = __objRest(_b, [
+      "href",
+      "exact",
+      "activeClassName",
+      "className",
+      "children",
+    ]);
   const pathname = (0, import_navigation.usePathname)();
   const router = (0, import_navigation.useRouter)();
-  const isExternal = import_react.default.useMemo(() => isExternalLink(href), [href]);
+  const isExternal = import_react.default.useMemo(
+    () => isExternalLink(href),
+    [href]
+  );
   const isActive = import_react.default.useMemo(() => {
     if (!pathname || isExternal) return false;
     const currentPath = normalizePath(pathname);
-    const targetPath = href.startsWith("/") ? normalizePath(href) : normalizePath(getPathnameFromExternalUrl(href));
+    const targetPath = href.startsWith("/")
+      ? normalizePath(href)
+      : normalizePath(getPathnameFromExternalUrl(href));
     if (exact) return currentPath === targetPath;
     if (targetPath === "/") return currentPath === "/";
-    return currentPath === targetPath || currentPath.startsWith(targetPath + "/");
+    return (
+      currentPath === targetPath || currentPath.startsWith(targetPath + "/")
+    );
   }, [pathname, href, exact, isExternal]);
   const mergedClassName = import_react.default.useMemo(() => {
     const baseClasses = [className];
@@ -145,7 +170,7 @@ function NavLink(_a) {
   };
   const ariaAttributes = import_react.default.useMemo(() => {
     const attributes = {
-      "aria-current": isActive ? "page" : void 0
+      "aria-current": isActive ? "page" : void 0,
     };
     if (rest["aria-label"]) {
       attributes["aria-label"] = rest["aria-label"];
@@ -154,14 +179,23 @@ function NavLink(_a) {
   }, [isActive, rest]);
   return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
     import_link.default,
-    __spreadProps(__spreadValues(__spreadValues({
-      href,
-      className: mergedClassName
-    }, ariaAttributes), rest), {
-      onClick: handleClick,
-      prefetch: true,
-      children
-    })
+    __spreadProps(
+      __spreadValues(
+        __spreadValues(
+          {
+            href,
+            className: mergedClassName,
+          },
+          ariaAttributes
+        ),
+        rest
+      ),
+      {
+        onClick: handleClick,
+        prefetch: true,
+        children,
+      }
+    )
   );
 }
 NavLink.displayName = "NavLink";
@@ -177,11 +211,20 @@ var useNavigate = () => {
   };
   return navigate;
 };
-var NavigationProgress = ({ color = "#2563EB", height = "3px", duration = 200 }) => {
-  const [width, setWidth] = (0, import_react.useState)("0%");
-  const [visible, setVisible] = (0, import_react.useState)(false);
-  const pathname = (0, import_navigation.usePathname)();
-  (0, import_react.useEffect)(() => {
+
+// src/NavigationProgressClient.tsx
+var import_react2 = require("react");
+var import_navigation2 = require("next/navigation");
+var import_jsx_runtime2 = require("react/jsx-runtime");
+var NavigationProgressClient = ({
+  color = "#2563EB",
+  height = "3px",
+  duration = 200,
+}) => {
+  const [width, setWidth] = (0, import_react2.useState)("0%");
+  const [visible, setVisible] = (0, import_react2.useState)(false);
+  const pathname = (0, import_navigation2.usePathname)();
+  (0, import_react2.useEffect)(() => {
     progressManager.onStart(() => {
       setVisible(true);
       setWidth("0%");
@@ -195,27 +238,25 @@ var NavigationProgress = ({ color = "#2563EB", height = "3px", duration = 200 })
       }, duration + 50);
     });
   }, [duration]);
-  (0, import_react.useEffect)(() => {
+  (0, import_react2.useEffect)(() => {
     progressManager.finish();
   }, [pathname]);
   if (!visible) return null;
-  return /* @__PURE__ */ (0, import_jsx_runtime.jsx)(
-    "div",
-    {
-      style: {
-        width,
-        height,
-        backgroundColor: color,
-        transition: `width ${duration}ms ease`
-      },
-      className: "fixed top-0 left-0 z-[99999]"
-    }
-  );
+  return /* @__PURE__ */ (0, import_jsx_runtime2.jsx)("div", {
+    style: {
+      width,
+      height,
+      backgroundColor: color,
+      transition: `width ${duration}ms ease`,
+    },
+    className: "fixed top-0 left-0 z-[99999]",
+  });
 };
 // Annotate the CommonJS export names for ESM import in node:
-0 && (module.exports = {
-  NavLink,
-  NavigationProgress,
-  useNavigate
-});
+0 &&
+  (module.exports = {
+    NavLink,
+    NavigationProgress,
+    useNavigate,
+  });
 //# sourceMappingURL=index.js.map
