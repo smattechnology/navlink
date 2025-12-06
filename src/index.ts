@@ -4,5 +4,6 @@
 export { NavLink } from "./NavLink";
 export type { NavLinkProps } from "./NavLink";
 
-export { NavigationProgress } from "./NavLink";
+// index.ts
+export { NavigationProgressClient as NavigationProgress } from "./NavigationProgressClient";
 export { useNavigate } from "./NavLink";
