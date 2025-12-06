@@ -1,57 +1,70 @@
+// src/lib/nav-progress/index.tsx
+"use client";
+
 import Link from "next/link";
-import { usePathname } from "next/navigation";
-import React from "react";
+import { usePathname, useRouter } from "next/navigation";
+import React, { useEffect, useState } from "react";
+
+// --------------------
+// Types
+// --------------------
 
 export interface NavLinkProps
   extends Omit<React.AnchorHTMLAttributes<HTMLAnchorElement>, "href"> {
-  /** Destination URL */
   href: string;
-  /** If true, require exact pathname match to mark active (defaults to false) */
   exact?: boolean;
-  /** Class applied when the link is active */
   activeClassName?: string;
-  /** Additional classes for the link */
   className?: string;
-  /** Rendered children (text, icons, etc.) */
   children: React.ReactNode;
-  /** If true, external links will open in same tab (defaults to false) */
 }
 
-/**
- * Production-ready NavLink component for Next.js (App Router)
- *
- * Features:
- * - Robust active state detection with proper URL normalization
- * - Comprehensive external link handling with security defaults
- * - Full TypeScript support with proper type safety
- * - Accessibility enhancements (ARIA labels, focus management)
- * - Performance optimized (memoization, proper link handling)
- * - Error boundaries and edge case handling
- * - SSR-safe with proper hydration handling
- */
+// --------------------
+// NavProgressManager
+// --------------------
 
-// Constants for better maintainability
+type ProgressCallback = () => void;
+
+class NavProgressManager {
+  private startListeners: ProgressCallback[] = [];
+  private finishListeners: ProgressCallback[] = [];
+
+  start() {
+    this.startListeners.forEach((cb) => cb());
+  }
+
+  finish() {
+    this.finishListeners.forEach((cb) => cb());
+  }
+
+  onStart(cb: ProgressCallback) {
+    this.startListeners.push(cb);
+  }
+
+  onFinish(cb: ProgressCallback) {
+    this.finishListeners.push(cb);
+  }
+}
+
+const progressManager = new NavProgressManager();
+
+// --------------------
+// Helper constants/functions for NavLink
+// --------------------
+
 const EXTERNAL_LINK_REGEX = /^(https?:)?\/\//;
 const DEFAULT_CLASSES =
   "inline-flex items-center gap-2 px-3 py-2 rounded-md transition-colors duration-200 focus:outline-none";
 const DEFAULT_ACTIVE_CLASSES =
   "text-sky-600 font-semibold bg-sky-50 dark:bg-sky-950/20";
 
-// Helper function to normalize paths for comparison
 const normalizePath = (path: string): string => {
   if (!path || path === "/") return "/";
-
-  // Remove trailing slashes for consistent comparison
-  const normalized = path.endsWith("/") ? path.slice(0, -1) : path;
-  return normalized;
+  return path.endsWith("/") ? path.slice(0, -1) : path;
 };
 
-// Helper function to determine if link is external
-const isExternalLink = (href: string): boolean => {
-  return EXTERNAL_LINK_REGEX.test(href);
-};
+const isExternalLink = (href: string): boolean =>
+  EXTERNAL_LINK_REGEX.test(href);
 
-// Helper function to extract pathname from external URLs
 const getPathnameFromExternalUrl = (url: string): string => {
   try {
     return new URL(url).pathname;
@@ -60,7 +73,11 @@ const getPathnameFromExternalUrl = (url: string): string => {
   }
 };
 
-export default function NavLink({
+// --------------------
+// NavLink Component
+// --------------------
+
+export function NavLink({
   href,
   exact = false,
   activeClassName = DEFAULT_ACTIVE_CLASSES,
@@ -69,66 +86,57 @@ export default function NavLink({
   ...rest
 }: NavLinkProps) {
   const pathname = usePathname();
+  const router = useRouter();
 
   const isExternal = React.useMemo(() => isExternalLink(href), [href]);
 
-  // Determine active state - handle SSR properly
   const isActive = React.useMemo(() => {
-    // During SSR or static generation, pathname is null
     if (!pathname || isExternal) return false;
 
     const currentPath = normalizePath(pathname);
-    let targetPath: string;
+    const targetPath = href.startsWith("/")
+      ? normalizePath(href)
+      : normalizePath(getPathnameFromExternalUrl(href));
 
-    if (href.startsWith("/")) {
-      targetPath = normalizePath(href);
-    } else {
-      targetPath = normalizePath(getPathnameFromExternalUrl(href));
-    }
+    if (exact) return currentPath === targetPath;
 
-    if (exact) {
-      return currentPath === targetPath;
-    }
-
-    // For non-exact matching, check if current path starts with target path
-    // and handle the root path specially
-    if (targetPath === "/") {
-      return currentPath === "/";
-    }
+    if (targetPath === "/") return currentPath === "/";
 
     return (
       currentPath === targetPath || currentPath.startsWith(targetPath + "/")
     );
   }, [pathname, href, exact, isExternal]);
 
-  // Merge classes efficiently - handle SSR case
   const mergedClassName = React.useMemo(() => {
     const baseClasses = [className];
-    // Only apply active class on client side to avoid hydration mismatch
-    if (isActive && pathname !== null) {
-      baseClasses.push(activeClassName);
-    }
+    if (isActive && pathname !== null) baseClasses.push(activeClassName);
     return baseClasses.filter(Boolean).join(" ").trim();
   }, [className, isActive, activeClassName, pathname]);
 
-  // FIX: Handle aria-label consistently between server and client
-  // Only compute aria-label if explicitly provided, don't derive from children
+  const handleClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    if (isExternal) return; // external links behave normally
+    if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey || e.button === 1)
+      return;
+    e.preventDefault();
+    if (pathname === href) return;
+    progressManager.start();
+    router.push(href);
+  };
+
   const ariaAttributes = React.useMemo(() => {
     const attributes: {
-      "aria-current"?: "page";
+      "aria-current"?: "page" | undefined;
       "aria-label"?: string;
     } = {
-      "aria-current": isActive && pathname !== null ? "page" : undefined,
+      "aria-current": isActive ? "page" : undefined,
     };
 
-    // Only set aria-label if explicitly provided in props
-    // This prevents hydration mismatch from deriving it from children
     if (rest["aria-label"]) {
       attributes["aria-label"] = rest["aria-label"];
     }
 
     return attributes;
-  }, [isActive, pathname, rest]);
+  }, [isActive, rest]);
 
   return (
     <Link
@@ -136,6 +144,7 @@ export default function NavLink({
       className={mergedClassName}
       {...ariaAttributes}
       {...rest}
+      onClick={handleClick}
       prefetch={true}
     >
       {children}
@@ -143,5 +152,74 @@ export default function NavLink({
   );
 }
 
-// Optional: Add display name for better debugging
 NavLink.displayName = "NavLink";
+
+// --------------------
+// useNavigate Hook
+// --------------------
+
+export const useNavigate = () => {
+  const router = useRouter();
+  const pathname = usePathname();
+
+  const navigate = (
+    href: string,
+    options?: { replace?: boolean; scroll?: boolean }
+  ) => {
+    if (pathname === href) return;
+    progressManager.start();
+    const { replace = false, scroll = true } = options || {};
+    if (replace) router.replace(href, { scroll });
+    else router.push(href, { scroll });
+  };
+
+  return navigate;
+};
+
+// --------------------
+// NavigationProgress Component
+// --------------------
+
+export const NavigationProgress: React.FC<{
+  color?: string;
+  height?: string;
+  duration?: number;
+}> = ({ color = "#2563EB", height = "3px", duration = 200 }) => {
+  const [width, setWidth] = useState("0%");
+  const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
+
+  useEffect(() => {
+    progressManager.onStart(() => {
+      setVisible(true);
+      setWidth("0%");
+      setTimeout(() => setWidth("40%"), 10);
+    });
+
+    progressManager.onFinish(() => {
+      setWidth("100%");
+      setTimeout(() => {
+        setVisible(false);
+        setWidth("0%");
+      }, duration + 50);
+    });
+  }, [duration]);
+
+  useEffect(() => {
+    progressManager.finish();
+  }, [pathname]);
+
+  if (!visible) return null;
+
+  return (
+    <div
+      style={{
+        width,
+        height,
+        backgroundColor: color,
+        transition: `width ${duration}ms ease`,
+      }}
+      className="fixed top-0 left-0 z-[99999]"
+    />
+  );
+};
