@@ -1,6 +1,6 @@
 {
   "name": "@nuraloom/navlink",
-  "version": "1.1.6",
+  "version": "1.1.7",
   "description": "A production-ready NavLink component for Next.js (App Router)",
   "main": "dist/index.js",
   "module": "dist/index.mjs",
